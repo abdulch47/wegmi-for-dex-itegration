@@ -29,10 +29,13 @@ const MainPool = ({ accounts }) => {
     const [pairAddress, setPairAddress] = useState("");
     const [WETH, setWETH] = useState("");
     const [AmountIn, setAmountIn] = useState("");
-    const [Decimals, setTokenDecimals] = useState("");
-    // const [AmountOut, setAmountOut] = useState("");
+    // const [Decimals, setTokenDecimals] = useState("");
+    const [Index, setIndex] = useState("");
     const [slippagePercantage, setSlippagePercentage] = useState("");
 
+    const setIndexHandeler = (event) =>{
+        setIndex(event.target.value)
+    }
     const setToAddressHandeler = (event) => {
         setToAddress(event.target.value);
     }
@@ -81,7 +84,22 @@ const MainPool = ({ accounts }) => {
         contract4 = new ethers.Contract(factoryAddress, Factory, signer);
         contract5 = new ethers.Contract(pairAddress, UniswapV2Pair, signer);
     }
+   const AllPairs = async()=>{
+    try{
+        await contract1
+        ?.factory().then(async(_Fac)=>{
+            console.log("Factory Address:", _Fac)
+            setFactoryAddress(_Fac)
+            await contract4
+            ?.allPairs(Index).then((_res)=>{
+                console.log("Pair:", _res);
+            })
+        })
 
+    }catch(error){
+        console.log("error:", error)
+    }
+   }
     //add liquidity function
     const AddLiquidity = async () => {
         try {
@@ -310,15 +328,15 @@ const MainPool = ({ accounts }) => {
 
             <div>
                 <div>
-                    <input type="text" placeholder="To Address"
-                        value={toAddress} onChange={setToAddressHandeler} />
-                    <input type="text" placeholder="Token A " value={AddressA} onChange={tokenAHandeler} />
+                    <input type="text" placeholder="Index"
+                        value={Index} onChange={setIndexHandeler} />
+                    {/* <input type="text" placeholder="Token A " value={AddressA} onChange={tokenAHandeler} />
                     <input type="text" placeholder="Token B" value={AddressB} onChange={tokenBHandeler} />
                     <input type="text" placeholder="AmountIn" value={AmountIn} onChange={setAmountInHandeler} />
-                    <input type="number" placeholder="Slippage" value={slippagePercantage} onChange={slippageHandeler} />
+                    <input type="number" placeholder="Slippage" value={slippagePercantage} onChange={slippageHandeler} /> */}
                     {/* <input type="text" placeholder="AmountB" value={token2Value} onChange={Token2ValueHandeler} /> */}
 
-                    <button onClick={SwapExactTokensForTokensSupportingFeeOnTransferTokens}>Swap Tokens</button>
+                    <button onClick={AllPairs}>Get Pairs</button>
                 </div>
             </div>
 
